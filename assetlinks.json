@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.u23devs.flutter_ddl_example",
+    "sha256_cert_fingerprints":
+    ["E3:7F:FD:3B:7D:92:99:9D:3E:8F:54:E2:55:AD:9A:F4:A1:01:5A:55:E2:E8:33:B4:06:B1:71:54:39:21:74:57"]
+  }
+}]
