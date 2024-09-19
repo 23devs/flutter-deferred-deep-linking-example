@@ -10,7 +10,8 @@
 
 The example app consists of 3 screens:
 
-* home screen (path '/'') - it has a button to navigate to details screen.
+* root (path '/'') - this screen checks if the app was launched for the first time, if it was, checks if the user was needed to be navigated with link. If not, navigates to home screen. If it was launched for first time and it gets the data that user tried to open a specific link, it opens this link. 
+* home screen (path '/') - has a button to navigate to details screen.
 * details screen (path '/details') - it shows a list of available details from 1 to 5. By clicking on the item you can access its detail screen.
 * detail screen (path '/details/:id') - this is the screen showing the data for specific item from the list which has a certain id. So it could be /details/1 or /details/4, etc. It just shows item name with its id.
 

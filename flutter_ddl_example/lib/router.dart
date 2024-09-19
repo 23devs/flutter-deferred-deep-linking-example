@@ -3,14 +3,14 @@ import 'package:go_router/go_router.dart';
 
 import 'screens/detail.dart';
 import 'screens/details.dart';
-import 'screens/home.dart';
+import 'screens/root.dart';
 
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
-        return const HomeScreen();
+        return const Root();
       },
       routes: <RouteBase>[
         GoRoute(
