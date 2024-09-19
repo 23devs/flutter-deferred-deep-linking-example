@@ -31,7 +31,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" />
-                <data android:host="flutter-ddl.23devs.com" /> 
+                <data android:host="mobile-apps-examples.23devs.com" /> 
                 <data android:pathPattern="/details/.*" />
             </intent-filter>
         </activity>
