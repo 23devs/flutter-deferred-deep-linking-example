@@ -42,8 +42,8 @@ To enable handling app links, add the following to your manifest located in <you
 You could specify here the scheme, host, and specific paths or path patterns for deep links.
 
 Documentation with more examples here:
-https://docs.flutter.dev/cookbook/navigation/set-up-app-links
-https://developer.android.com/training/app-links/verify-android-applinks 
+* https://docs.flutter.dev/cookbook/navigation/set-up-app-links
+* https://developer.android.com/training/app-links/verify-android-applinks 
 
 ### Adjust files in iOS App
 
@@ -85,8 +85,8 @@ Or for personal accounts (they don't support capability from xcode):
 3. Save the ios/Runner/Runner.entitlements file.
 
 Documentation:
-https://docs.flutter.dev/cookbook/navigation/set-up-universal-links
-https://developer.apple.com/documentation/xcode/supporting-associated-domains
+* https://docs.flutter.dev/cookbook/navigation/set-up-universal-links
+* https://developer.apple.com/documentation/xcode/supporting-associated-domains
 
 ## Assetlinks files
 
@@ -134,8 +134,8 @@ keytool -list -v -keystore upload-keystore.jks
 Copy SHA 256 signing certificate fingerprint data from terminal.
 
 Documentation:
-https://docs.flutter.dev/cookbook/navigation/set-up-app-links
-https://developer.android.com/training/app-links/verify-android-applinks 
+* https://docs.flutter.dev/cookbook/navigation/set-up-app-links
+* https://developer.android.com/training/app-links/verify-android-applinks 
 
 
 ### Example of file apple-app-site-association (iOS):
@@ -180,5 +180,5 @@ https://<your-domain>/.well-known/apple-app-site-association
 Verify that your browser can access this file. It should have application/json format.
 
 Documentation:
-https://docs.flutter.dev/cookbook/navigation/set-up-universal-links
-https://developer.apple.com/documentation/xcode/supporting-associated-domains
+* https://docs.flutter.dev/cookbook/navigation/set-up-universal-links
+* https://developer.apple.com/documentation/xcode/supporting-associated-domains
