@@ -12,7 +12,7 @@ class Root extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-      future: checkIsFirstLaunch(), // async work
+      future: checkIfWasLaunchedBefore(),
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
@@ -20,7 +20,7 @@ class Root extends StatelessWidget {
           default:
             if (snapshot.hasError) {
               return const ErrorScreen();
-            } else if (snapshot.data != null && snapshot.data!) {
+            } else if (snapshot.data != null && !snapshot.data!) {
               return const DetailScreen(id: '2');
               //context.go('details/2')
             } else {
@@ -31,12 +31,12 @@ class Root extends StatelessWidget {
     );
   }
 
-  Future<bool> checkIsFirstLaunch() async {
-    bool isFirstLaunch =
-        await SharedPrefs().getBoolValue(SharedPrefs.isFirstLaunchKey);
+  Future<bool> checkIfWasLaunchedBefore() async {
+    bool wasLaunchedBefore =
+        await SharedPrefs().getBoolValue(SharedPrefs.wasLaunchedBeforeKey);
 
-    if (!isFirstLaunch) {
-      await SharedPrefs().setBoolValue(SharedPrefs.isFirstLaunchKey, true);
+    if (!wasLaunchedBefore) {
+      await SharedPrefs().setBoolValue(SharedPrefs.wasLaunchedBeforeKey, true);
       return false;
     }
 
