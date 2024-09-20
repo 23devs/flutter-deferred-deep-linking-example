@@ -4,4 +4,5 @@ export default ({ env }) => ({
   app: {
     keys: env.array('APP_KEYS'),
   },
+  url: env('STRAPI_URL', 'https://mobile-apps-examples.23devs.com/strapi'),
 });
