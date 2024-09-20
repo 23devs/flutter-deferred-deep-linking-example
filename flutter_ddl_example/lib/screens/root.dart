@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../services/device_info_client.dart';
 import '../services/shared_prefs.dart';
 import 'error.dart';
 import 'home.dart';
@@ -12,7 +13,7 @@ class Root extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-      future: checkIfWasLaunchedBefore(),
+      future: checkIfWasLaunchedBefore(context),
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
@@ -31,12 +32,16 @@ class Root extends StatelessWidget {
     );
   }
 
-  Future<bool> checkIfWasLaunchedBefore() async {
+  Future<bool> checkIfWasLaunchedBefore(BuildContext context) async {
     bool wasLaunchedBefore =
         await SharedPrefs().getBoolValue(SharedPrefs.wasLaunchedBeforeKey);
 
     if (!wasLaunchedBefore) {
       await SharedPrefs().setBoolValue(SharedPrefs.wasLaunchedBeforeKey, true);
+      if (context.mounted) {
+        //todo: get data from api
+        await DeviceInfoClient.checkDeviceInfo(context);
+      }
       return false;
     }
 
