@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:public_ip_address/public_ip_address.dart';
 
 class DeviceInfo {
-  late int deviceWidth;
-  late int deviceHeight;
-  late String ip;
-  late String os;
-  late DateTime timestamp;
+  int? deviceWidth;
+  int? deviceHeight;
+  String? ip;
+  String? os;
+  String? timestamp;
 
   DeviceInfo({
-    required this.deviceWidth,
-    required this.deviceHeight,
-    required this.ip,
-    required this.os,
-    required this.timestamp,
+    this.deviceWidth,
+    this.deviceHeight,
+    this.ip,
+    this.os,
+    this.timestamp,
   });
 
   Map<String, dynamic> toJson() => {
@@ -22,7 +22,7 @@ class DeviceInfo {
         'deviceHeight': deviceHeight,
         'ip': ip,
         'os': os,
-        'timestamp': timestamp.toIso8601String(),
+        'timestamp': timestamp,
       };
 
   int getDeviceWidth(BuildContext context) {
@@ -50,5 +50,13 @@ class DeviceInfo {
 
   String getTimeStamp() {
     return DateTime.now().toUtc().toIso8601String();
+  }
+
+  Future<void> setDeviceInfo(BuildContext context) async {
+    deviceWidth = getDeviceWidth(context);
+    deviceHeight = getDeviceHeight(context);
+    os = getDeviceOS();
+    ip = await getPublicIP();
+    timestamp = getTimeStamp();
   }
 }
