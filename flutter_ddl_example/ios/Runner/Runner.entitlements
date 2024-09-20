@@ -4,7 +4,7 @@
 <dict>
   <key>com.apple.developer.associated-domains</key>
   <array>
-    <string>applinks:flutter-ddl.23devs.com</string>
+    <string>applinks:mobile-apps-examples.23devs.com</string>
   </array>
 </dict>
 </plist>
