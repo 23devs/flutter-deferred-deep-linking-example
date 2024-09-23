@@ -4,7 +4,6 @@ import 'dart:async';
 // import 'dart:convert';
 // import 'dart:io';
 
-import 'package:flutter/material.dart';
 // import 'package:http/http.dart' as http;
 
 import '../models/device_info.dart';
@@ -14,12 +13,12 @@ class DeviceInfoClient {
   static const String deviceInfosUrl = 'device-infos';
   static const String setInfoUrl = '$deviceInfosUrl/check';
 
-  static Future<void> checkDeviceInfo(BuildContext context) async {
+  static Future<void> checkDeviceInfo() async {
     try {
       final DeviceInfo info = DeviceInfo();
-      await info.setDeviceInfo(context);
+      await info.setDeviceInfo();
 
-      print(info.deviceHeight);
+      //print(info.deviceHeight);
       print(info.deviceWidth);
       print(info.os);
       print(info.ip);

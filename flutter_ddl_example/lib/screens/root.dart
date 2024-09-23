@@ -13,7 +13,7 @@ class Root extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-      future: checkIfWasLaunchedBefore(context),
+      future: checkIfWasLaunchedBefore(),
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
@@ -32,16 +32,13 @@ class Root extends StatelessWidget {
     );
   }
 
-  Future<bool> checkIfWasLaunchedBefore(BuildContext context) async {
+  Future<bool> checkIfWasLaunchedBefore() async {
     bool wasLaunchedBefore =
         await SharedPrefs().getBoolValue(SharedPrefs.wasLaunchedBeforeKey);
 
     if (!wasLaunchedBefore) {
       await SharedPrefs().setBoolValue(SharedPrefs.wasLaunchedBeforeKey, true);
-      if (context.mounted) {
-        //todo: get data from api
-        await DeviceInfoClient.checkDeviceInfo(context);
-      }
+      await DeviceInfoClient.checkDeviceInfo();
       return false;
     }
 
