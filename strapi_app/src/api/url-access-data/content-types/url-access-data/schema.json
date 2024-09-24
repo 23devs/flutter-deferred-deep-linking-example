@@ -4,7 +4,8 @@
   "info": {
     "singularName": "url-access-data",
     "pluralName": "url-access-datas",
-    "displayName": "Url Access Data"
+    "displayName": "Url Access Data",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -21,10 +22,6 @@
     },
     "param": {
       "type": "integer",
-      "required": true
-    },
-    "date": {
-      "type": "date",
       "required": true
     }
   }

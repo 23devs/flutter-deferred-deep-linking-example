@@ -2,29 +2,24 @@
  * url-access-data controller
  */
 
-import { factories } from '@strapi/strapi'
+import { factories } from '@strapi/strapi';
 
 export default factories.createCoreController('api::url-access-data.url-access-data', ({ strapi }) =>  ({
   async set(ctx) {
     try {
-      const clientIp = ctx.req.headers['x-forwarded-for'] || ctx.req.socket.remoteAddress;
-      console.log(clientIp);
-      console.log(ctx.request.body);
-
-      const { screenWidth, os, version, url } = ctx.request.body;
+      const url = await strapi.service('api::url-access-data.url-access-data').set(ctx);
       
       return {
-        status: 'ok'
+        message: 'ok',
+        redirectUrl: url
       };
     } catch (err) {
-      ctx.body = err;
+      return ctx.badRequest(err);
     }
   },
 
   async check(ctx) {
     try {
-      const clientIp = ctx.req.headers['x-forwarded-for'] || ctx.req.socket.remoteAddress;
-      console.log(clientIp);
       return {
         status: 'ok'
       };
