@@ -9,6 +9,10 @@ export default factories.createCoreController('api::url-access-data.url-access-d
     try {
       const clientIp = ctx.req.headers['x-forwarded-for'] || ctx.req.socket.remoteAddress;
       console.log(clientIp);
+      console.log(ctx.request.body);
+
+      const { screenWidth, os, version, url } = ctx.request.body;
+      
       return {
         status: 'ok'
       };
