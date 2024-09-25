@@ -18,9 +18,10 @@ services:
       APP_KEYS: ${APP_KEYS}
       NODE_ENV: ${NODE_ENV}
       HASH_SECRET: ${HASH_SECRET}
-      SECRET_EXPIRES: ${SECRET_EXPIRES}
       APP_STORE_APP_URL: ${APP_STORE_APP_URL}
       GOOGLE_PLAY_APP_URL: ${GOOGLE_PLAY_APP_URL}
+      CLIENT_URL: ${CLIENT_URL}
+      API_URL: ${API_URL}
     volumes:
       - ./strapi_app/config:/opt/app/config
       - ./strapi_app/src:/opt/app/src
