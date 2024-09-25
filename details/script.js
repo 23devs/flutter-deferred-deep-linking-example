@@ -1,3 +1,12 @@
+//specify url for your server
+const apiUrl = "https://api-mobile-apps-examples.23devs.com";
+const pageUrl = window.location.href;
+
+// get device data
+const screenWidth = window.screen.width ? window.screen.width : "";
+const os = platform.os.family.toLowerCase();
+const version = platform.os.version;
+
 window.addEventListener(
     "DOMContentLoaded",
     load,
@@ -5,44 +14,37 @@ window.addEventListener(
 );
 
 async function load() {
-    const screenWidth = window.screen.width ? window.screen.width : "";
-
-    const os = platform.os.family.toLowerCase();
-    const version = platform.os.version;
-
-    var widthEl = document.getElementById("width-p");
-    widthEl.innerHTML += screenWidth;
-
-    var osEl = document.getElementById("os-p");
-    osEl.innerHTML += os;
-
-    var versionEl = document.getElementById("version-p");
-    versionEl.innerHTML += version;
-
     const data = {
         screenWidth,
         os,
         version,
-        url: window.location.href.replace(
-            "https://mobile-apps-examples.23devs.com",
-            ""
-        ),
+        url: pageUrl,
     };
 
-    let response = await fetch(
-        "http://api-mobile-apps-examples.23devs.com/api/url-access-datas/set",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json;charset=utf-8",
-            },
-            body: JSON.stringify(data),
+    try {
+        let response = await fetch(
+            `${apiUrl}/api/url-access-datas/set`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8",
+                },
+                body: JSON.stringify(data),
+            }
+        );
+
+        let result = await response?.json();
+
+        // redirect to the url provided by server (store specified for your platform)
+        if (result?.redirectUrl) {
+            window.location.href = result.redirectUrl;
         }
-    );
-
-    let result = await response.json();
-
-    if (result.redirectUrl) {
-        window.open(result.redirectUrl);
+    } catch (e) {
+        console.log(e);
+        // you cah show here a message for user, e.g. that your app is currently not able to be downloaded 
+        // provide some other way to open the link
+        // or maybe you just show specific content of your website here 
+        var errorEl = document.getElementById("error");
+        errorEl.innerHTML += 'Something went wrong';
     }
 }
