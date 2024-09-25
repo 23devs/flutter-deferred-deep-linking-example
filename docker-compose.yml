@@ -17,9 +17,15 @@ services:
       ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
       APP_KEYS: ${APP_KEYS}
       NODE_ENV: ${NODE_ENV}
+      HASH_SECRET: ${HASH_SECRET}
+      APP_STORE_APP_URL: ${APP_STORE_APP_URL}
+      GOOGLE_PLAY_APP_URL: ${GOOGLE_PLAY_APP_URL}
+      CLIENT_URL: ${CLIENT_URL}
+      API_URL: ${API_URL}
     volumes:
       - ./strapi_app/config:/opt/app/config
       - ./strapi_app/src:/opt/app/src
+      - ./strapi_app/types:/opt/app/types
       - ./strapi_app/package.json:/opt/package.json
       - ./strapi_app/package-lock.json:/opt/package-lock.json
       - ./strapi_app/public/uploads:/opt/app/public/uploads

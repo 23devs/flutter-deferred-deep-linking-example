@@ -1,0 +1,28 @@
+{
+  "kind": "collectionType",
+  "collectionName": "url_access_datas",
+  "info": {
+    "singularName": "url-access-data",
+    "pluralName": "url-access-datas",
+    "displayName": "Url Access Data",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "hash": {
+      "type": "string",
+      "required": true
+    },
+    "url": {
+      "type": "string",
+      "required": true
+    },
+    "param": {
+      "type": "integer",
+      "required": true
+    }
+  }
+}
