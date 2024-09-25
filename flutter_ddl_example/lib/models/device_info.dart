@@ -5,17 +5,13 @@ import 'package:public_ip_address/public_ip_address.dart';
 
 class DeviceInfo {
   int? deviceWidth;
-  //int? deviceHeight;
   String? ip;
   String? os;
-  String? timestamp;
 
   DeviceInfo({
     this.deviceWidth,
-    //this.deviceHeight,
     this.ip,
     this.os,
-    this.timestamp,
   });
 
   Map<String, dynamic> toJson() => {
@@ -23,7 +19,6 @@ class DeviceInfo {
         // 'deviceHeight': deviceHeight,
         'ip': ip,
         'os': os,
-        'timestamp': timestamp,
       };
 
   int getDeviceWidth() {
@@ -59,9 +54,7 @@ class DeviceInfo {
 
   Future<void> setDeviceInfo() async {
     deviceWidth = getDeviceWidth();
-    //deviceHeight = getDeviceHeight();
     os = getDeviceOS();
     ip = await getPublicIP();
-    timestamp = getTimeStamp();
   }
 }

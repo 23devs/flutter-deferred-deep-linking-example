@@ -38,6 +38,7 @@ class Root extends StatelessWidget {
 
     if (!wasLaunchedBefore) {
       await SharedPrefs().setBoolValue(SharedPrefs.wasLaunchedBeforeKey, true);
+
       await DeviceInfoClient.checkDeviceInfo();
       return false;
     }
