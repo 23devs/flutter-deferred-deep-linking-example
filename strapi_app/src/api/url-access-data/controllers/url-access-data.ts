@@ -20,11 +20,13 @@ export default factories.createCoreController('api::url-access-data.url-access-d
 
   async check(ctx) {
     try {
+      await strapi.service('api::url-access-data.url-access-data').check(ctx);
+
       return {
         status: 'ok'
       };
     } catch (err) {
-      ctx.body = err;
+      return ctx.badRequest(err);
     }
   },
 }));

@@ -35,7 +35,7 @@ interface ParametersForHash {
 const getIpAddress: (req: IncomingMessage) => string = (
   req: IncomingMessage
 ) => {
-  return req.headers["x-forwarded-for"] ? req.headers["x-forwarded-for"][0] : req.socket.remoteAddress;
+  return req.headers["x-forwarded-for"] ? req.headers["x-forwarded-for"] as string : req.socket.remoteAddress;
 };
 
 // hash (get the same hash for the same params)
@@ -136,6 +136,43 @@ export default factories.createCoreService(
 
       const redirectUrl = getRedirectUrl(platform);
       return redirectUrl;
+    },
+
+    async check(ctx) {
+      const { screenWidth, os, version } = ctx.request.body;
+
+      if (!screenWidth || !os) {
+        throw new ApplicationError("Invalid body");
+      }
+
+      let platform: Platform | null = null;
+
+      if (os === 'ios' || os === 'android') {
+        platform = os as Platform;
+      }
+
+      if (!platform) {
+        throw new ApplicationError("Invalid platform");
+      }
+
+      const ip = getIpAddress(ctx.req);
+    
+      const params: ParametersForHash = {
+        screenWidth,
+        os: platform,
+        version,
+        ip
+      };
+
+      console.log('params:');
+      console.log(params);
+
+      const hash = getHash(params);
+
+      console.log('hash:');
+      console.log(hash);
+      
+      return { message: 'ok' };
     },
   })
 );
