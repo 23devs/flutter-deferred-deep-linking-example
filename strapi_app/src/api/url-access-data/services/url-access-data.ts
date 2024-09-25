@@ -14,7 +14,8 @@ const GOOGLE_PLAY_APP_URL = process.env.GOOGLE_PLAY_APP_URL ||
   "https://play.google.com/store/apps/details?id=ru.e2e4gu.books_flutter_application";
 
 const HASH_SECRET = process.env.HASH_SECRET || "secret$wssh2Hdnd73hsg%2ssi$8Kj";
-const SECRET_EXPIRES = process.env.SECRET_EXPIRES || "1d";
+
+const CLIENT_URL = process.env.CLIENT_URL;
 
 type Platform = "android" | "ios";
 
@@ -30,29 +31,35 @@ interface ParametersForHash {
   ip: string;
 }
 
+// IP addr
 const getIpAddress: (req: IncomingMessage) => string = (
   req: IncomingMessage
 ) => {
   return req.headers["x-forwarded-for"] ? req.headers["x-forwarded-for"][0] : req.socket.remoteAddress;
 };
 
+// hash (get the same hash for the same params)
 const getHash: (params: ParametersForHash) => string = (
     params: ParametersForHash
 ) => {
   return jwt.sign(params, HASH_SECRET, {
-    expiresIn: SECRET_EXPIRES,
+    noTimestamp: true
   });
 };
 
+// Url for store
 const getRedirectUrl: (platform: Platform) => string = (
   platform: Platform
 ) => {
   return platform === "ios" ? APP_STORE_APP_URL : GOOGLE_PLAY_APP_URL;
 }
 
+// get url params
 const getUrlDetails: (url: string) => UrlDetails = (
   url: string
 ) => {
+  // get page id from url param like https://example.com/details/2
+
   const urlParts: string[] = url.split('/');
   let param: number | null = Number(urlParts[urlParts.length - 1]);
 
@@ -60,11 +67,15 @@ const getUrlDetails: (url: string) => UrlDetails = (
     param = null;
   }
 
+  // if needed get id from query params here
+  // like https://example.com/details?id=2
+
   if (!param) {
     throw new ApplicationError("Invalid url");
   }
 
-  const urlSubstr = url.replace(`/${param}`, '').replace('https://mobile-apps-examples.23devs.com', '');
+  //get url part like /details
+  const urlSubstr = url.replace(`/${param}`, '').replace(CLIENT_URL, '');
 
   let urlDetails: UrlDetails = {
     url: urlSubstr,
@@ -72,6 +83,7 @@ const getUrlDetails: (url: string) => UrlDetails = (
   };
   return urlDetails;
 }
+
 
 export default factories.createCoreService(
   "api::url-access-data.url-access-data",
@@ -85,7 +97,7 @@ export default factories.createCoreService(
 
       let platform: Platform | null = null;
 
-      if (os === 'ios' || 'android') {
+      if (os === 'ios' || os === 'android') {
         platform = os as Platform;
       }
 
@@ -101,6 +113,9 @@ export default factories.createCoreService(
         version,
         ip
       };
+
+      console.log('params:');
+      console.log(params);
 
       const hash = getHash(params);
       const urlDetails: UrlDetails = getUrlDetails(url);
