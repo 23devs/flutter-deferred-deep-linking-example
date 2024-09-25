@@ -33,11 +33,17 @@ async function load() {
             }
         );
 
-        let result = await response?.json();
+        if (response.ok) {
+            let result = await response.json();
 
-        // redirect to the url provided by server (store specified for your platform)
-        if (result?.redirectUrl) {
-            window.location.href = result.redirectUrl;
+            // redirect to the url provided by server (store specified for your platform)
+            if (result && result.redirectUrl) {
+                window.location.href = result.redirectUrl;
+            } else {
+                throw Error("Unable to provide redirection url");
+            }
+        } else {
+            throw Error("Unable to get data from server");
         }
     } catch (e) {
         console.log(e);
