@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -31,6 +29,7 @@ final GoRouter router = GoRouter(
             return details.url;
           }
         } catch (e) {
+          // ignore: avoid_print
           print(e.toString());
         }
 
