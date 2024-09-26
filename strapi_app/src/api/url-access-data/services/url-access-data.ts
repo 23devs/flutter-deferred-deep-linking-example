@@ -19,11 +19,6 @@ const CLIENT_URL = process.env.CLIENT_URL;
 
 type Platform = "android" | "ios";
 
-interface UrlDetails {
-  param: number;
-  url: string;
-}
-
 interface ParametersForHash {
   screenWidth: number;
   os: Platform;
@@ -65,33 +60,12 @@ const getRedirectUrl: (platform: Platform) => string = (
 }
 
 // get url params
-const getUrlDetails: (url: string) => UrlDetails = (
+const getUrlDetails: (url: string) => string = (
   url: string
 ) => {
-  // get page id from url param like https://example.com/details/2
-
-  const urlParts: string[] = url.split('/');
-  let param: number | null = Number(urlParts[urlParts.length - 1]);
-
-  if (isNaN(param)) {
-    param = null;
-  }
-
-  // if needed get id from query params here
-  // like https://example.com/details?id=2
-
-  if (!param) {
-    throw new ApplicationError("Invalid url");
-  }
-
-  //get url part like /details
-  const urlSubstr = url.replace(`/${param}`, '').replace(CLIENT_URL, '');
-
-  let urlDetails: UrlDetails = {
-    url: urlSubstr,
-    param
-  };
-  return urlDetails;
+  //get url part like /details/:id?query=
+  const urlSubstr = url.replace(CLIENT_URL, '');
+  return urlSubstr;
 }
 
 
@@ -108,6 +82,7 @@ export default factories.createCoreService(
       console.log(screenWidth);
       console.log(os);
       console.log(url);
+      console.log(version);
 
       let platform: Platform | null = null;
 
@@ -134,7 +109,7 @@ export default factories.createCoreService(
       console.log(params);
 
       const hash = getHash(params);
-      const urlDetails: UrlDetails = getUrlDetails(url);
+      const urlDetails: string = getUrlDetails(url);
       
       try {
         await strapi.documents(
@@ -142,8 +117,7 @@ export default factories.createCoreService(
         ).create({
           data: {
             hash: hash,
-            url: urlDetails.url,
-            param: urlDetails.param
+            url: urlDetails
           }
         });
       } catch(e) {

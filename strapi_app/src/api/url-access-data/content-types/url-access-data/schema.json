@@ -19,10 +19,6 @@
     "url": {
       "type": "string",
       "required": true
-    },
-    "param": {
-      "type": "integer",
-      "required": true
     }
   }
 }
