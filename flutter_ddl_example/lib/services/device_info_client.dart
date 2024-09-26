@@ -2,17 +2,20 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
 import '../models/device_info.dart';
+import '../models/server_error.dart';
+import '../models/url_details.dart';
 import 'api_helper.dart';
 
 class DeviceInfoClient {
   static const String urlAccessDatasUrl = 'url-access-datas';
-  static const String checkUrlAccessdatasUrl = '$urlAccessDatasUrl/check';
+  static const String checkUrlAccessDatasUrl = '$urlAccessDatasUrl/check';
 
-  static Future<void> checkDeviceInfo() async {
+  static Future<UrlDetails> checkDeviceInfo() async {
     try {
       final DeviceInfo info = DeviceInfo();
       await info.setDeviceInfo();
@@ -21,16 +24,23 @@ class DeviceInfoClient {
       print(info.os);
       print(info.version);
 
-      await http
+      final http.Response response = await http
           .post(
-            ApiHelper.buildUri(checkUrlAccessdatasUrl),
+            ApiHelper.buildUri(checkUrlAccessDatasUrl),
             headers: ApiHelper.buildHeaders(),
             body: jsonEncode(info),
           )
           .timeout(const Duration(seconds: ApiHelper.timeoutDuration));
+      if (response.statusCode == HttpStatus.ok) {
+        return UrlDetails.fromJson(jsonDecode(response.body));
+      } else {
+        ServerError error = ServerError.fromJson(jsonDecode(response.body));
+        throw ServerException(message: error.message);
+      }
+    } on TimeoutException catch (_) {
+      throw ServerException(message: 'Unable to set connection');
     } catch (e) {
-      print(e.toString());
-      throw Error();
+      throw ServerException(message: e.toString());
     }
   }
 }
