@@ -185,3 +185,28 @@ Verify that your browser can access this file. It should have application/json f
 Documentation:
 * https://docs.flutter.dev/cookbook/navigation/set-up-universal-links
 * https://developer.apple.com/documentation/xcode/supporting-associated-domains
+
+### Nginx config for app-link assosiaction files
+
+Example. Insert other location blocks, your files location (we recommend a separate folder, but without dot in name), and your domain name instead of mobile-apps-examples.23devs.com.
+
+```conf
+server {
+    listen 80;
+    server_name mobile-apps-examples.23devs.com;
+    charset utf-8;
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    location = /.well-known/assetlinks.json {
+        root /var/www/html/assetlinks;
+        try_files /assetlinks.json =404;
+    }
+
+    location = /.well-known/apple-app-site-association {
+        root /var/www/html/assetlinks;
+        default_type application/json;
+        try_files /apple-app-site-association =404;
+    }
+}
+```
