@@ -1,19 +1,21 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'dart:ui';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 
 class DeviceInfo {
-  int? deviceWidth;
+  int? screenWidth;
   String? os;
+  String? version;
 
-  DeviceInfo({
-    this.deviceWidth,
-    this.os,
-  });
+  DeviceInfo({this.screenWidth, this.os, this.version});
 
   Map<String, dynamic> toJson() => {
-        'deviceWidth': deviceWidth,
+        'screenWidth': screenWidth,
         'os': os,
+        'version': os,
       };
 
   int getDeviceWidth() {
@@ -30,8 +32,28 @@ class DeviceInfo {
     return 'ios';
   }
 
+  Future<String> getVersion() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    String version = '';
+
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      version = androidInfo.version.release;
+    }
+
+    if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      version = iosInfo.systemVersion;
+    }
+
+    print('Running on $version');
+
+    return version;
+  }
+
   Future<void> setDeviceInfo() async {
-    deviceWidth = getDeviceWidth();
+    screenWidth = getDeviceWidth();
     os = getDeviceOS();
+    version = await getVersion();
   }
 }

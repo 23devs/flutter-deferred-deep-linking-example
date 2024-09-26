@@ -17,8 +17,9 @@ class DeviceInfoClient {
       final DeviceInfo info = DeviceInfo();
       await info.setDeviceInfo();
 
-      print(info.deviceWidth);
+      print(info.screenWidth);
       print(info.os);
+      print(info.version);
 
       await http
           .post(
