@@ -35,11 +35,17 @@ interface ParametersForHash {
 const getIpAddress: (req: IncomingMessage) => string = (
   req: IncomingMessage
 ) => {
-  console.log('req headers');
-  console.log(req.headers["x-forwarded-for"]);
-  console.log(req.socket.remoteAddress);
+  let xForwardedHeader: string | null = null;
 
-  return req.headers["x-forwarded-for"] ? req.headers["x-forwarded-for"][0] : req.socket.remoteAddress;
+  if (req.headers["x-forwarded-for"]) {
+    if (typeof req.headers["x-forwarded-for"] === "string") {
+      xForwardedHeader = req.headers["x-forwarded-for"].split(',')[0];
+    } else {
+      xForwardedHeader = req.headers["x-forwarded-for"][0];
+    }
+  }
+
+  return xForwardedHeader ? xForwardedHeader : req.socket.remoteAddress;
 };
 
 // hash (get the same hash for the same params)
