@@ -50,7 +50,8 @@ async function load() {
         // you cah show here a message for user, e.g. that your app is currently not able to be downloaded 
         // provide some other way to open the link
         // or maybe you just show specific content of your website here 
-        var errorEl = document.getElementById("error");
-        errorEl.innerHTML += 'Something went wrong';
+        var headerEl = document.getElementById("header");
+        var urlArray = pageUrl.split('/');
+        headerEl.innerHTML += `Detail ${urlArray[urlArray.length - 1]}`;
     }
 }
