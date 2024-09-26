@@ -1,44 +1,26 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:public_ip_address/public_ip_address.dart';
 
 class DeviceInfo {
-  int? deviceWidth;
-  String? ip;
+  int? screenWidth;
   String? os;
+  String? version;
 
-  DeviceInfo({
-    this.deviceWidth,
-    this.ip,
-    this.os,
-  });
+  DeviceInfo({this.screenWidth, this.os, this.version});
 
   Map<String, dynamic> toJson() => {
-        'deviceWidth': deviceWidth,
-        // 'deviceHeight': deviceHeight,
-        'ip': ip,
+        'screenWidth': screenWidth,
         'os': os,
+        'version': version,
       };
 
   int getDeviceWidth() {
     FlutterView view = WidgetsBinding.instance.platformDispatcher.views.first;
-    // Dimensions in logical pixels (dp)
     Size size = view.physicalSize;
     int width = (size.width / view.devicePixelRatio).toInt();
     return width;
-  }
-
-  // int getDeviceHeight() {
-  //   FlutterView view = WidgetsBinding.instance.platformDispatcher.views.first;
-  //   // Dimensions in logical pixels (dp)
-  //   Size size = view.physicalSize;
-  //   int height = (size.height / view.devicePixelRatio).toInt();
-  //   return height;
-  // }
-
-  Future<String> getPublicIP() async {
-    return await IpAddress().getIp();
   }
 
   String getDeviceOS() {
@@ -48,13 +30,26 @@ class DeviceInfo {
     return 'ios';
   }
 
-  String getTimeStamp() {
-    return DateTime.now().toUtc().toIso8601String();
+  Future<String> getVersion() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    String version = '';
+
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      version = androidInfo.version.release;
+    }
+
+    if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      version = iosInfo.systemVersion;
+    }
+
+    return version;
   }
 
   Future<void> setDeviceInfo() async {
-    deviceWidth = getDeviceWidth();
+    screenWidth = getDeviceWidth();
     os = getDeviceOS();
-    ip = await getPublicIP();
+    version = await getVersion();
   }
 }

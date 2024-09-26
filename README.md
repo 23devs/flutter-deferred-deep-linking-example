@@ -10,8 +10,10 @@
 
 The example app consists of 3 screens:
 
-* root (path '/'') - this screen checks if the app was launched for the first time, if it was, checks if the user was needed to be navigated with link. If not, navigates to home screen. If it was launched for first time and it gets the data that user tried to open a specific link, it opens this link. 
 * home screen (path '/') - has a button to navigate to details screen.
+
+Before accessing this screen the Go Router checks if the app was launched for the first time, if it was, checks if the user was needed to be navigated with link. If not, navigates to home screen. If it was launched for first time and it gets the data that user tried to open a specific link, it opens this link. 
+
 * details screen (path '/details') - it shows a list of available details from 1 to 5. By clicking on the item you can access its detail screen.
 * detail screen (path '/details/:id') - this is the screen showing the data for specific item from the list which has a certain id. So it could be /details/1 or /details/4, etc. It just shows item name with its id.
 
@@ -125,7 +127,7 @@ How to get the sha256 fingerprint:
 keytool -genkey -v -keystore ~/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
 ```
 
-This will generate file upload-keystore.jks, which can be moved to your flutter project in android folder (it should be ignore by git!).
+This will generate file upload-keystore.jks, which can be moved to your flutter project in android folder (it should be ignored by git!).
 To get sha 256 cert fingerprint from this file execute this command from directory where it's located:
 
 ```sh
@@ -148,7 +150,7 @@ Apple formats the appID as <team id>.<bundle id>.
 Locate the bundle ID in the Xcode project.
 Locate the team ID in the developer account.
 
-For example: Given a team ID of S8QB4VV633 and a bundle ID of com.example.deeplinkCookbook, You would enter an appID entry of S8QB4VV633.com.example.deeplinkCookbook.
+For example: Given a team ID of S8QB4VV633 and a bundle ID of com.example.myApp, You would enter an appID entry of S8QB4VV633.com.example.myApp.
 
 This file uses the JSON format. Don't include the .json file extension when you save this file. 
 
@@ -183,3 +185,28 @@ Verify that your browser can access this file. It should have application/json f
 Documentation:
 * https://docs.flutter.dev/cookbook/navigation/set-up-universal-links
 * https://developer.apple.com/documentation/xcode/supporting-associated-domains
+
+### Nginx config for app-link assosiaction files
+
+Example. Insert other location blocks, your files location (we recommend a separate folder, but without dot in name), and your domain name instead of mobile-apps-examples.23devs.com.
+
+```conf
+server {
+    listen 80;
+    server_name mobile-apps-examples.23devs.com;
+    charset utf-8;
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    location = /.well-known/assetlinks.json {
+        root /var/www/html/assetlinks;
+        try_files /assetlinks.json =404;
+    }
+
+    location = /.well-known/apple-app-site-association {
+        root /var/www/html/assetlinks;
+        default_type application/json;
+        try_files /apple-app-site-association =404;
+    }
+}
+```
