@@ -15,7 +15,7 @@ class DeviceInfo {
   Map<String, dynamic> toJson() => {
         'screenWidth': screenWidth,
         'os': os,
-        'version': os,
+        'version': version,
       };
 
   int getDeviceWidth() {

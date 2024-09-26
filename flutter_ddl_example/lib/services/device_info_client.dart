@@ -29,6 +29,7 @@ class DeviceInfoClient {
           )
           .timeout(const Duration(seconds: ApiHelper.timeoutDuration));
     } catch (e) {
+      print(e.toString());
       throw Error();
     }
   }

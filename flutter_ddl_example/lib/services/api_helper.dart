@@ -2,7 +2,7 @@ class ApiHelper {
   static const int timeoutDuration = 10;
   static const String apiPath = '/api/';
   static const String _scheme = 'https';
-  static const String _host = 'mobile-apps-examples.23devs.com';
+  static const String _host = 'api-mobile-apps-examples.23devs.com';
   static int? _port;
 
   static Map<String, String> buildHeaders({String? accessToken}) {
