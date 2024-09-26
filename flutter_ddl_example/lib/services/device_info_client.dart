@@ -20,10 +20,6 @@ class DeviceInfoClient {
       final DeviceInfo info = DeviceInfo();
       await info.setDeviceInfo();
 
-      print(info.screenWidth);
-      print(info.os);
-      print(info.version);
-
       final http.Response response = await http
           .post(
             ApiHelper.buildUri(checkUrlAccessDatasUrl),
@@ -39,6 +35,8 @@ class DeviceInfoClient {
       }
     } on TimeoutException catch (_) {
       throw ServerException(message: 'Unable to set connection');
+    } on ServerException catch (e) {
+      throw ServerException(message: e.message);
     } catch (e) {
       throw ServerException(message: e.toString());
     }
