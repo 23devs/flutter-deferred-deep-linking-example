@@ -46,8 +46,6 @@ class DeviceInfo {
       version = iosInfo.systemVersion;
     }
 
-    print('Running on $version');
-
     return version;
   }
 
