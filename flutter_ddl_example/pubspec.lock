@@ -232,14 +232,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
-  public_ip_address:
-    dependency: "direct main"
-    description:
-      name: public_ip_address
-      sha256: "03b78fb35f7b683bbefca62c19571405a5f641c9e0277aa4fdd8e47198cc7779"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
   shared_preferences:
     dependency: "direct main"
     description:
