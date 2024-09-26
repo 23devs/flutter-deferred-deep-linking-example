@@ -13,7 +13,6 @@ export default factories.createCoreController('api::url-access-data.url-access-d
         redirectUrl: url
       };
     } catch (err) {
-      console.log(err);
       return ctx.badRequest(err);
     }
   },

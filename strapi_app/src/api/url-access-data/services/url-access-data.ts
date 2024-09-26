@@ -25,18 +25,11 @@ export default factories.createCoreService(
         throw new ApplicationError("Invalid body");
       }
 
-      console.log(screenWidth);
-      console.log(os);
-      console.log(url);
-      console.log(version);
-
       let platform: Platform | null = null;
 
       if (os === 'ios' || os === 'android') {
         platform = os as Platform;
       }
-
-      console.log(platform);
 
       if (!platform) {
         throw new ApplicationError("Invalid platform");
@@ -50,9 +43,6 @@ export default factories.createCoreService(
         version,
         ip
       };
-
-      console.log('params:');
-      console.log(params);
 
       const hash = getHash(params);
       const urlDetails: string = getUrlDetails(url);
@@ -100,13 +90,7 @@ export default factories.createCoreService(
         ip
       };
 
-      console.log('params:');
-      console.log(params);
-
       const hash = getHash(params);
-
-      console.log('hash:');
-      console.log(hash);
 
       const timestampForFilter = getTimestampForFilter();
 
@@ -130,11 +114,8 @@ export default factories.createCoreService(
           }
         );
 
-        console.log(documents);
-
         if(documents?.length > 0) {
           const document = documents[0];
-          console.log(document);
 
           return document.url;
         } else {
