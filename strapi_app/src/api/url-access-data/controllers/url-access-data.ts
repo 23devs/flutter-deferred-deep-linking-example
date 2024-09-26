@@ -10,7 +10,6 @@ export default factories.createCoreController('api::url-access-data.url-access-d
       const url = await strapi.service('api::url-access-data.url-access-data').set(ctx);
       
       return {
-        message: 'ok',
         redirectUrl: url
       };
     } catch (err) {
@@ -21,10 +20,10 @@ export default factories.createCoreController('api::url-access-data.url-access-d
 
   async check(ctx) {
     try {
-      await strapi.service('api::url-access-data.url-access-data').check(ctx);
+      const url = await strapi.service('api::url-access-data.url-access-data').check(ctx);
 
       return {
-        status: 'ok'
+        redirectUrl: url
       };
     } catch (err) {
       return ctx.badRequest(err);

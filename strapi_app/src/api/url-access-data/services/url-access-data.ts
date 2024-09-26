@@ -5,68 +5,14 @@
 import { factories } from "@strapi/strapi";
 import { errors } from '@strapi/utils';
 const { ApplicationError } = errors;
-import { IncomingMessage } from "http";
-import * as jwt from "jsonwebtoken";
-
-const APP_STORE_APP_URL = process.env.APP_STORE_APP_URL || 
-  "https://apps.apple.com/ru/app/23-devs-library/id6472991915";
-const GOOGLE_PLAY_APP_URL = process.env.GOOGLE_PLAY_APP_URL || 
-  "https://play.google.com/store/apps/details?id=ru.e2e4gu.books_flutter_application";
-
-const HASH_SECRET = process.env.HASH_SECRET || "secret$wssh2Hdnd73hsg%2ssi$8Kj";
-
-const CLIENT_URL = process.env.CLIENT_URL;
-
-type Platform = "android" | "ios";
-
-interface ParametersForHash {
-  screenWidth: number;
-  os: Platform;
-  version: string;
-  ip: string;
-}
-
-// IP addr
-const getIpAddress: (req: IncomingMessage) => string = (
-  req: IncomingMessage
-) => {
-  let xForwardedHeader: string | null = null;
-
-  if (req.headers["x-forwarded-for"]) {
-    if (typeof req.headers["x-forwarded-for"] === "string") {
-      xForwardedHeader = req.headers["x-forwarded-for"].split(',')[0];
-    } else {
-      xForwardedHeader = req.headers["x-forwarded-for"][0];
-    }
-  }
-
-  return xForwardedHeader ? xForwardedHeader : req.socket.remoteAddress;
-};
-
-// hash (get the same hash for the same params)
-const getHash: (params: ParametersForHash) => string = (
-    params: ParametersForHash
-) => {
-  return jwt.sign(params, HASH_SECRET, {
-    noTimestamp: true
-  });
-};
-
-// Url for store
-const getRedirectUrl: (platform: Platform) => string = (
-  platform: Platform
-) => {
-  return platform === "ios" ? APP_STORE_APP_URL : GOOGLE_PLAY_APP_URL;
-}
-
-// get url params
-const getUrlDetails: (url: string) => string = (
-  url: string
-) => {
-  //get url part like /details/:id?query=
-  const urlSubstr = url.replace(CLIENT_URL, '');
-  return urlSubstr;
-}
+import { ParametersForHash, Platform } from "../../../utils/url-access-data/types";
+import { 
+  getHash, 
+  getIpAddress, 
+  getRedirectUrl, 
+  getTimestampForFilter, 
+  getUrlDetails, 
+} from "../../../utils/url-access-data/utils";
 
 
 export default factories.createCoreService(
@@ -75,7 +21,7 @@ export default factories.createCoreService(
     async set(ctx) {
       const { screenWidth, os, version, url } = ctx.request.body;
 
-      if (!screenWidth || !os || !url) {
+      if (!os || !version || !url || !screenWidth) {
         throw new ApplicationError("Invalid body");
       }
 
@@ -131,7 +77,7 @@ export default factories.createCoreService(
     async check(ctx) {
       const { screenWidth, os, version } = ctx.request.body;
 
-      if (!screenWidth || !os) {
+      if (!os || !version || !screenWidth ) {
         throw new ApplicationError("Invalid body");
       }
 
@@ -161,8 +107,42 @@ export default factories.createCoreService(
 
       console.log('hash:');
       console.log(hash);
-      
-      return { message: 'ok' };
+
+      const timestampForFilter = getTimestampForFilter();
+
+      try {
+        // find entries with same hash 
+        // that were created in recent hour
+        // return the most recent one
+        const documents = await strapi.documents(
+          "api::url-access-data.url-access-data"
+        ).findMany(
+          {
+            filters: {
+              hash: {
+                $eq: hash
+              },
+              createdAt: {
+                $gt: timestampForFilter
+              }
+            },
+            sort: "createdAt:desc"
+          }
+        );
+
+        console.log(documents);
+
+        if(documents?.length > 0) {
+          const document = documents[0];
+          console.log(document);
+
+          return document.url;
+        } else {
+          throw Error();
+        }
+      } catch(e) {
+        throw new ApplicationError("Unable to get url");
+      }
     },
   })
 );
