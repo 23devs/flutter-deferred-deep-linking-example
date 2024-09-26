@@ -99,11 +99,17 @@ export default factories.createCoreService(
         throw new ApplicationError("Invalid body");
       }
 
+      console.log(screenWidth);
+      console.log(os);
+      console.log(url);
+
       let platform: Platform | null = null;
 
       if (os === 'ios' || os === 'android') {
         platform = os as Platform;
       }
+
+      console.log(platform);
 
       if (!platform) {
         throw new ApplicationError("Invalid platform");
