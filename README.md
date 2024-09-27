@@ -1,8 +1,8 @@
 # Flutter Deferred Deep Linking Example
 
 * Flutter Example App - folder flutter_ddl_example/
-* Strapi API
-* Frontend App
+* Strapi API - folder strapi_app/
+* frontend App - folder fingerprint_scanner_web_app
 * nginx configs - folder nginx/
 * json files for universal links checking - folder assetlinks/
 
@@ -12,14 +12,14 @@ The example app consists of 3 screens:
 
 * home screen (path '/') - has a button to navigate to details screen.
 
-Before accessing this screen the Go Router checks if the app was launched for the first time, if it was, checks if the user was needed to be navigated with link. If not, navigates to home screen. If it was launched for first time and it gets the data that user tried to open a specific link, it opens this link. 
+Before accessing this screen the Go Router checks if the app was launched for the first time, if it was, checks if the user was needed to be navigated with link. If not, navigates to home screen. If it was launched for first time and it gets the data that user tried to open a specific link, it opens this link. If it does get error, it just opens Home Screen.
 
 * details screen (path '/details') - it shows a list of available details from 1 to 5. By clicking on the item you can access its detail screen.
 * detail screen (path '/details/:id') - this is the screen showing the data for specific item from the list which has a certain id. So it could be /details/1 or /details/4, etc. It just shows item name with its id.
 
 The idea is that when someone opens a link like https://mobile-apps-examples.23devs.com/details/3 from browser or by scanning qr code with this link, the app opens and the user is navigated directly to /details/3 screen. 
 
-If the user hasn't the app installed yet, they are navigated to https://mobile-apps-examples.23devs.com/details/3 in their browser and they are redirected to the needed store to download the app. When they open it, they are proceeded to /details/3 screen.
+If the user hasn't the app installed yet, they are navigated to https://mobile-apps-examples.23devs.com/details/3 in their browser and they are redirected to the needed store to download the app. When they open the installed app, they are proceeded to /details/3 screen.
 
 For routing we have added the package go_router (https://pub.dev/packages/go_router), which handles deep linking.
 
@@ -186,7 +186,7 @@ Documentation:
 * https://docs.flutter.dev/cookbook/navigation/set-up-universal-links
 * https://developer.apple.com/documentation/xcode/supporting-associated-domains
 
-### Nginx config for app-link assosiaction files
+## Nginx config for app-link assosiation files
 
 Example. Insert other location blocks, your files location (we recommend a separate folder, but without dot in name), and your domain name instead of mobile-apps-examples.23devs.com.
 
@@ -210,3 +210,119 @@ server {
     }
 }
 ```
+
+## Frontend App
+
+This is simple example HTML file + js script file, that collects data from the browser (screen width, os and its version using Platform.js), sends this data to the server and then redirects user to the needed store, or shows some sort of error / content for desktop users.
+
+Currently, some Android Tablets may be identified as Linux system, so they won't be redirected to the store or get same fingerprint in app.
+
+## Strapi App
+
+The example app uses 5.0.0 version of Strapi (Typescript).
+It has Url Access Data entity for handling app linking when app is not installed.
+There are 2 custom actions (Check, Set) that also need to be available for end users
+
+* Admin Panel settings -> Users & Permissions plugin -> Roles
+* Choose Public role
+* Find Url-access-data 
+* Enable access for routes: check, set
+* Save
+
+Also See env.example for setting environment variables.
+
+### Set
+
+method: POST 
+url: https://api-mobile-apps-examples.23devs.com/api/url-data-access/set
+body:
+
+```json
+{
+    "screenWidth": 360,
+    "os": "android",
+    "version": "10",
+    "url": "https://mobile-apps-examples.23devs.com/details/4"
+}
+```
+
+Example success response (returns the app page in the respective store):
+
+```json
+{
+    "redirectUrl": "https://play.google.com/store/apps/details?id=ru.e2e4gu.books_flutter_application"
+}
+```
+
+Example Error Response 
+(if the platform is not Android or iOS)
+
+```json
+{
+    "data": null,
+    "error": {
+        "name": "ApplicationError",
+        "message": "Invalid platform",
+        "details": {},
+        "status": 400
+    }
+}
+```
+
+This endpoint is used by the frontend app to send fingerprint data and get store redirection url.
+
+The server also gets ip of the sender and forms an object with properties screenWidth, os, version, ip, then hashes this object (via jsonwebtoken lib) and stores it in database among with the url that user tried to access ("/details/4") and timestamp.
+
+Example of stored data:
+
+```
+{
+  hash: "exzmxmxjdssieiwkww.sksjsjsweiwksksks.wkskjsjsjsjjs",
+  url: "/details/4",
+  createdAt: "2024-09-27T10:50:08.047Z"
+}
+```
+
+For objects with identical values of all properties the hash will stay the same.
+
+### Check
+
+method: POST 
+url: https://api-mobile-apps-examples.23devs.com/api/url-data-access/check
+body:
+
+```json
+{
+    "screenWidth": 360,
+    "os": "android",
+    "version": "10",
+}
+```
+
+Example success response 
+(returns the route part for needed app screen):
+
+```json
+{
+    "redirectUrl": "/details/4"
+}
+```
+
+Example Error Response 
+(if unable to get redirection url):
+
+```json
+{
+    "data": null,
+    "error": {
+        "name": "ApplicationError",
+        "message": "Unable to get url",
+        "details": {},
+        "status": 400
+    }
+}
+```
+
+This endpoint is used by the flutter app to send its fingerprint data and get store redirection url.
+
+The server also gets ip of the sender and forms an object with properties screenWidth, os, version, ip, then hashes this object (via jsonwebtoken lib). It tries to find in database all entries with same hash and that were created within recent hour. If it does not found any, returns an error. If it does, it only returns the latest entry's url.
