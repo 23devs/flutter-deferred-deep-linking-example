@@ -6,6 +6,23 @@
 * nginx configs - folder nginx/
 * json files for universal links checking - folder assetlinks/
 
+## Video examples
+
+The user scans QR code which contains a link to a specific details, e.g. https://mobile-apps-examples.23devs.com/details/4
+
+If the app is not installed yet, it opens the page to install app (in example it's just a simple web page with "Download" button, but it could also be google play or App store url), after the app is installed and opened, it shows specific screen for the Detail 4.
+
+
+https://github.com/user-attachments/assets/22f19620-ab33-44e4-82dd-e19938960048
+
+
+If the app is installed on the device, it opens specific screen for the needed Detail in the app.
+
+
+https://github.com/user-attachments/assets/be6fa51b-bc90-4663-bd9d-5bbd2d032fc4
+
+
+
 ## Flutter Example App
 
 The example app consists of 3 screens:
